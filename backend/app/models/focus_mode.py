@@ -5,7 +5,7 @@ from sqlalchemy import String, DateTime, Boolean, Integer, Float, ForeignKey, JS
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-from app.models.types import UUID
+from app.models.types import GUID
 
 
 class FocusMode(Base):
@@ -14,12 +14,12 @@ class FocusMode(Base):
     __tablename__ = "focus_modes"
     
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), 
+        GUID(), 
         primary_key=True, 
         default=uuid.uuid4
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), 
+        GUID(), 
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False
     )

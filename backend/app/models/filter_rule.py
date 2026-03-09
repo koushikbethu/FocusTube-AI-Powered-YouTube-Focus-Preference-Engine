@@ -5,7 +5,7 @@ from sqlalchemy import String, DateTime, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-from app.models.types import UUID
+from app.models.types import GUID
 
 
 class FilterRule(Base):
@@ -14,12 +14,12 @@ class FilterRule(Base):
     __tablename__ = "filter_rules"
     
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), 
+        GUID(), 
         primary_key=True, 
         default=uuid.uuid4
     )
     mode_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), 
+        GUID(), 
         ForeignKey("focus_modes.id", ondelete="CASCADE"),
         nullable=False
     )

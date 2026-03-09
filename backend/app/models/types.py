@@ -4,8 +4,8 @@ from sqlalchemy import TypeDecorator, CHAR
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 
 
-class UUID(TypeDecorator):
-    """Platform-independent UUID type."""
+class GUID(TypeDecorator):
+    """Platform-independent GUID/UUID type."""
     impl = CHAR
     cache_ok = True
 
