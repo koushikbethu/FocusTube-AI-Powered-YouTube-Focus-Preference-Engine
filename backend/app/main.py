@@ -31,9 +31,16 @@ app = FastAPI(
 )
 
 # CORS middleware
+allowed_origins = [
+    settings.frontend_url,
+    "https://koushikbethu.github.io",
+    "http://localhost:5173",
+    "http://localhost:3000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
