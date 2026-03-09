@@ -41,13 +41,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const login = () => {
         // Redirect to backend API for Google OAuth
-        window.location.href = 'http://localhost:8000/api/auth/google'
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
+        window.location.href = `${apiUrl}/auth/google`
     }
 
     const logout = () => {
         localStorage.removeItem('token')
         setUser(null)
-        window.location.href = '/login'
+        window.location.href = `${import.meta.env.BASE_URL}login`
     }
 
     const setToken = async (token: string): Promise<boolean> => {
