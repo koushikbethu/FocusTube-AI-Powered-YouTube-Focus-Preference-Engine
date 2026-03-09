@@ -5,28 +5,18 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-jobs:
-  deploy-backend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Deploy Backend to Railway
-        run: |
-          curl -fsSL https://railway.app/install.sh | sh
-          railway link ${{ secrets.RAILWAY_PROJECT_ID }}
-          railway up
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+permissions:
+  contents: write
+  pages: write
 
+jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
-    needs: deploy-backend
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
       
