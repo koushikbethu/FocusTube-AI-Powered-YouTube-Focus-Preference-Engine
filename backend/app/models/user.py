@@ -3,9 +3,9 @@ import uuid
 from datetime import datetime
 from sqlalchemy import String, DateTime, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.dialects.postgresql import UUID
 
 from app.database import Base
+from app.models.types import UUID
 
 
 class User(Base):
@@ -14,7 +14,7 @@ class User(Base):
     __tablename__ = "users"
     
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), 
+        UUID(), 
         primary_key=True, 
         default=uuid.uuid4
     )
