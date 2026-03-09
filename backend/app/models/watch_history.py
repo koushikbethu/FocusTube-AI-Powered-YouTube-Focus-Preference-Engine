@@ -5,7 +5,7 @@ from sqlalchemy import String, DateTime, Boolean, Integer, Float, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-from app.models.types import UUID
+from app.models.types import GUID
 
 
 class WatchHistory(Base):
@@ -14,12 +14,12 @@ class WatchHistory(Base):
     __tablename__ = "watch_history"
     
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), 
+        GUID(), 
         primary_key=True, 
         default=uuid.uuid4
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), 
+        GUID(), 
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False
     )
@@ -37,7 +37,7 @@ class WatchHistory(Base):
     
     # Context
     mode_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), 
+        GUID(), 
         nullable=True
     )
     

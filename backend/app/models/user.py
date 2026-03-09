@@ -5,7 +5,7 @@ from sqlalchemy import String, DateTime, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
-from app.models.types import UUID
+from app.models.types import GUID
 
 
 class User(Base):
@@ -14,7 +14,7 @@ class User(Base):
     __tablename__ = "users"
     
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(), 
+        GUID(), 
         primary_key=True, 
         default=uuid.uuid4
     )
