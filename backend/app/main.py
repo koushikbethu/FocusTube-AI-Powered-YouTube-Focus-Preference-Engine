@@ -38,6 +38,11 @@ allowed_origins = [
     "http://localhost:3000",
 ]
 
+# Auto-add Netlify domains
+if settings.frontend_url and ".netlify.app" in settings.frontend_url:
+    allowed_origins.append(settings.frontend_url)
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
