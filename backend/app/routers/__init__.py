@@ -1,2 +1,2 @@
 """Routers package initialization."""
-from app.routers import auth, modes, feed, filter, analytics
+from app.routers import auth, modes, feed, filter, analytics, suggestions

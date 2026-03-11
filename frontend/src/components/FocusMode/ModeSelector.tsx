@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, Lock, Unlock } from 'lucide-react'
+import { ChevronDown, Lock } from 'lucide-react'
 import { useFocusModes } from '../../hooks/useFocusModes'
 import './ModeSelector.css'
 

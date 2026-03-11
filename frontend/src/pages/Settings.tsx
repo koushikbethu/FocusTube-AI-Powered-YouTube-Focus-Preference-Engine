@@ -136,7 +136,7 @@ export default function Settings() {
                             disabled={resetting}
                             title="Reset to default modes with all YouTube categories"
                         >
-                            <RefreshCw size={14} className={resetting ? 'spin' : ''} />
+                            <RefreshCw size={14} className={resetting ? 'animate-spin' : ''} />
                             {resetting ? 'Resetting...' : 'Reset'}
                         </button>
                     </div>

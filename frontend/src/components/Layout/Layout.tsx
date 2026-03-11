@@ -90,7 +90,7 @@ export default function Layout({ children }: LayoutProps) {
                         <span>
                             <strong>{activeMode.name}</strong> is locked
                             {activeMode.lock_until && (
-                                <> until {new Date(activeMode.lock_until).toLocaleTimeString()}</>
+                                <> until {new Date(activeMode.lock_until).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</>
                             )}
                         </span>
                     </div>

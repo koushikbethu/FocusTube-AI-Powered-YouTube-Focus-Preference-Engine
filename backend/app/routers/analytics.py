@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from typing import List
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from app.database import get_db
 from app.models.user import User
@@ -115,7 +115,7 @@ async def get_analytics_summary(
     db: AsyncSession = Depends(get_db)
 ):
     """Get analytics summary for the user."""
-    since = datetime.utcnow() - timedelta(days=days)
+    since = datetime.now(timezone.utc) - timedelta(days=days)
     
     # Get basic watch history stats
     result = await db.execute(
@@ -190,7 +190,7 @@ async def get_daily_stats(
     db: AsyncSession = Depends(get_db)
 ):
     """Get today's usage statistics."""
-    today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
     
     result = await db.execute(
         select(

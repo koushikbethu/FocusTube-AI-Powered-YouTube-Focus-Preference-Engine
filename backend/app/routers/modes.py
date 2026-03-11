@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import List
 from uuid import UUID
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from app.database import get_db
 from app.models.user import User
@@ -17,6 +17,17 @@ from app.schemas.mode import (
 from app.routers.auth import get_current_user
 
 router = APIRouter()
+
+
+def _is_lock_active(lock_until) -> bool:
+    """Check if a lock is still active, handling both naive and aware datetimes."""
+    if not lock_until:
+        return False
+    now = datetime.now(timezone.utc)
+    # If lock_until is naive (from SQLite), treat it as UTC
+    if lock_until.tzinfo is None:
+        lock_until = lock_until.replace(tzinfo=timezone.utc)
+    return lock_until > now
 
 
 # Preset focus modes with all YouTube categories
@@ -269,7 +280,7 @@ async def update_mode(
             detail="Focus mode not found"
         )
     
-    if mode.is_locked and mode.lock_until and mode.lock_until > datetime.utcnow():
+    if mode.is_locked and _is_lock_active(mode.lock_until):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Cannot modify locked focus mode"
@@ -324,7 +335,7 @@ async def activate_mode(
     )
     locked_mode = result.scalar_one_or_none()
     
-    if locked_mode and locked_mode.lock_until and locked_mode.lock_until > datetime.utcnow():
+    if locked_mode and _is_lock_active(locked_mode.lock_until):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=f"Cannot change mode: '{locked_mode.name}' is locked until {locked_mode.lock_until}"
@@ -390,7 +401,7 @@ async def lock_session(
         )
     
     mode.is_locked = True
-    mode.lock_until = datetime.utcnow() + timedelta(minutes=lock_data.duration_minutes)
+    mode.lock_until = datetime.now(timezone.utc) + timedelta(minutes=lock_data.duration_minutes)
     
     await db.commit()
     await db.refresh(mode)

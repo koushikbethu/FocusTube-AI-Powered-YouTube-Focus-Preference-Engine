@@ -1,6 +1,6 @@
 """Personalization service for learning user preferences."""
 from typing import Dict, List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 
@@ -62,7 +62,7 @@ class PersonalizationService:
     
     async def _analyze_watch_history(self, days: int = 30) -> Dict:
         """Analyze watch history patterns."""
-        since = datetime.utcnow() - timedelta(days=days)
+        since = datetime.now(timezone.utc) - timedelta(days=days)
         
         # Get watch history with content cache
         result = await self.db.execute(
@@ -99,7 +99,7 @@ class PersonalizationService:
     
     async def _analyze_feedback(self, days: int = 30) -> Dict:
         """Analyze explicit user feedback."""
-        since = datetime.utcnow() - timedelta(days=days)
+        since = datetime.now(timezone.utc) - timedelta(days=days)
         
         result = await self.db.execute(
             select(UserFeedback, ContentCache)

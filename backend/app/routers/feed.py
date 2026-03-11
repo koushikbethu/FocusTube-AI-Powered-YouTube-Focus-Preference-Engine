@@ -83,7 +83,7 @@ async def get_feed(
         if page_token:
             try:
                 page_num = int(page_token)
-            except:
+            except (ValueError, TypeError):
                 page_num = 0
         
         # Use seed based on page for different content per page

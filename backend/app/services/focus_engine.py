@@ -1,5 +1,5 @@
 """Focus Engine for managing focus modes and sessions."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
@@ -77,7 +77,7 @@ class FocusEngine:
             raise ValueError("Can only lock an active focus mode")
         
         mode.is_locked = True
-        mode.lock_until = datetime.utcnow() + timedelta(minutes=duration_minutes)
+        mode.lock_until = datetime.now(timezone.utc) + timedelta(minutes=duration_minutes)
         
         await self.db.commit()
         return mode
@@ -112,7 +112,7 @@ class FocusEngine:
         mode = result.scalar_one_or_none()
         
         if mode and mode.lock_until:
-            if mode.lock_until > datetime.utcnow():
+            if mode.lock_until > datetime.now(timezone.utc):
                 return mode
             else:
                 # Lock expired, unlock it
@@ -133,7 +133,7 @@ class FocusEngine:
                 "remaining_minutes": None
             }
         
-        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
         
         result = await self.db.execute(
             select(func.sum(WatchHistory.watch_duration_seconds))
@@ -172,7 +172,7 @@ class FocusEngine:
         
         lock_status = None
         if mode.is_locked and mode.lock_until:
-            remaining_lock = (mode.lock_until - datetime.utcnow()).total_seconds()
+            remaining_lock = (mode.lock_until - datetime.now(timezone.utc)).total_seconds()
             if remaining_lock > 0:
                 lock_status = {
                     "is_locked": True,

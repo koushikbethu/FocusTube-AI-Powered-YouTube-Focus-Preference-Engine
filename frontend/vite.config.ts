@@ -2,9 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     plugins: [react()],
-    base: '/FocusTube-AI-Powered-YouTube-Focus-Preference-Engine/',
+    base: mode === 'production' ? '/FocusTube-AI-Powered-YouTube-Focus-Preference-Engine/' : '/',
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),
@@ -19,4 +19,4 @@ export default defineConfig({
             },
         },
     },
-})
+}))

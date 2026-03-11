@@ -1,5 +1,5 @@
 """Demo data for when YouTube API is unavailable (e.g., quota exceeded)."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import random
 import hashlib
 
@@ -163,7 +163,7 @@ def get_demo_videos(categories=None, max_results=20, page_token=None):
                 all_videos.append(video_copy)
     
     # Add common fields
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     for i, video in enumerate(all_videos):
         # Create unique ID with random suffix for pagination
         base_id = video.get("id", f"video_{i}")
@@ -325,7 +325,7 @@ def generate_dynamic_videos(categories=None, count=50, seed=None):
             "view_count": random.randint(100000, 50000000),
             "thumbnail_url": f"https://picsum.photos/seed/{i}/320/180",
             "is_short": False,
-            "published_at": (datetime.utcnow() - timedelta(days=random.randint(1, 365))).isoformat() + "Z",
+            "published_at": (datetime.now(timezone.utc) - timedelta(days=random.randint(1, 365))).isoformat() + "Z",
             "category": cat,  # Add category for fast filtering
             "clickbait_score": 0.1,
             "entertainment_score": 0.3 if cat in ["EDUCATION", "SCIENCE_TECH"] else 0.6,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Clock, Video, SkipForward, CheckCircle, TrendingUp, BarChart2, AlertCircle } from 'lucide-react'
 import api from '../services/api'
 import { AnalyticsSummary, DailyStats } from '../types'
@@ -10,11 +10,7 @@ export default function Analytics() {
     const [loading, setLoading] = useState(true)
     const [days, setDays] = useState(7)
 
-    useEffect(() => {
-        fetchData()
-    }, [days])
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true)
         try {
             const [summaryRes, dailyRes] = await Promise.all([
@@ -28,7 +24,11 @@ export default function Analytics() {
         } finally {
             setLoading(false)
         }
-    }
+    }, [days])
+
+    useEffect(() => {
+        fetchData()
+    }, [fetchData])
 
     if (loading) {
         return (

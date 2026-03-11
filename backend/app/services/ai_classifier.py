@@ -4,7 +4,7 @@ import google.generativeai as genai
 from typing import Dict, Any, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from app.config import get_settings
 from app.models.content_cache import ContentCache
@@ -17,8 +17,10 @@ class AIClassifier:
     """AI-powered video content classifier using Gemini."""
     
     CATEGORIES = [
-        "EDUCATION", "STUDY", "TECH", "MUSIC", "PODCAST",
-        "NEWS", "ENTERTAINMENT", "MEME", "CLICKBAIT", "GAMING"
+        "EDUCATION", "SCIENCE_TECH", "HOWTO_STYLE", "MUSIC", "GAMING",
+        "ENTERTAINMENT", "COMEDY", "NEWS_POLITICS", "SPORTS",
+        "PEOPLE_BLOGS", "FILM_ANIMATION", "TRAVEL_EVENTS",
+        "AUTOS_VEHICLES", "PETS_ANIMALS", "NONPROFITS",
     ]
     
     CLASSIFICATION_PROMPT = """You are a video content classifier. Analyze the following video metadata and classify it.
@@ -33,7 +35,7 @@ Duration: {duration} seconds
 
 TASK: Classify this video and provide scores. Respond ONLY with valid JSON in this exact format:
 {{
-    "category": "one of: EDUCATION, STUDY, TECH, MUSIC, PODCAST, NEWS, ENTERTAINMENT, MEME, CLICKBAIT, GAMING",
+    "category": "one of: EDUCATION, SCIENCE_TECH, HOWTO_STYLE, MUSIC, GAMING, ENTERTAINMENT, COMEDY, NEWS_POLITICS, SPORTS, PEOPLE_BLOGS, FILM_ANIMATION, TRAVEL_EVENTS, AUTOS_VEHICLES, PETS_ANIMALS, NONPROFITS",
     "confidence_score": 0.0 to 1.0 (how confident you are in the classification),
     "entertainment_score": 0.0 to 1.0 (0 = purely educational, 1 = purely entertainment),
     "depth_score": 0.0 to 1.0 (0 = shallow/superficial, 1 = deep/informative),
@@ -42,15 +44,20 @@ TASK: Classify this video and provide scores. Respond ONLY with valid JSON in th
 
 CLASSIFICATION GUIDELINES:
 - EDUCATION: Formal courses, tutorials, lectures from educational channels
-- STUDY: Academic content, research, study techniques
-- TECH: Technology reviews, coding tutorials, tech news
+- SCIENCE_TECH: Technology reviews, coding tutorials, tech news, science content
+- HOWTO_STYLE: How-to guides, DIY, cooking, beauty, fashion, fitness
 - MUSIC: Songs, albums, concerts, music videos
-- PODCAST: Long-form discussions, interviews (usually 20+ minutes)
-- NEWS: Current events, news analysis
-- ENTERTAINMENT: General entertainment, vlogs, comedy (not meme)
-- MEME: Short viral content, memes, compilations
-- CLICKBAIT: Sensationalized titles, misleading thumbnails, low value
-- GAMING: Game streams, reviews, gameplay
+- GAMING: Game streams, reviews, gameplay, esports
+- ENTERTAINMENT: General entertainment, vlogs, variety content
+- COMEDY: Comedy sketches, stand-up, funny compilations, memes
+- NEWS_POLITICS: Current events, news analysis, political content
+- SPORTS: Sports highlights, analysis, fitness
+- PEOPLE_BLOGS: Personal vlogs, lifestyle, people-focused content
+- FILM_ANIMATION: Movies, trailers, animation, film reviews
+- TRAVEL_EVENTS: Travel vlogs, event coverage, exploration
+- AUTOS_VEHICLES: Car reviews, automotive content
+- PETS_ANIMALS: Animal content, pet care
+- NONPROFITS: Nonprofit, activism, social causes
 
 Clickbait indicators:
 - ALL CAPS words in title
@@ -329,6 +336,36 @@ Respond with ONLY the JSON, no other text."""
                     depth_score = 0.6
                     break
         
+        # News/Politics detection
+        if category == "ENTERTAINMENT":
+            news_keywords = [
+                "news", "politics", "election", "government", "policy",
+                "breaking news", "headlines", "current events", "debate",
+                "congress", "parliament", "president", "minister",
+                "geopolitics", "economy", "inflation", "crisis"
+            ]
+            for kw in news_keywords:
+                if kw in text:
+                    category = "NEWS_POLITICS"
+                    entertainment_score = 0.3
+                    depth_score = 0.7
+                    break
+        
+        # Sports detection
+        if category == "ENTERTAINMENT":
+            sports_keywords = [
+                "sports", "football", "basketball", "soccer", "cricket",
+                "nba", "nfl", "premier league", "world cup", "olympics",
+                "match highlights", "goal", "touchdown", "slam dunk",
+                "tennis", "baseball", "mma", "ufc", "boxing", "wrestling"
+            ]
+            for kw in sports_keywords:
+                if kw in text:
+                    category = "SPORTS"
+                    entertainment_score = 0.6
+                    depth_score = 0.4
+                    break
+        
         # ============= DURATION-BASED ADJUSTMENTS =============
         if duration < 60:  # Shorts are usually entertainment
             if category not in ["MUSIC"]:
@@ -387,8 +424,8 @@ Respond with ONLY the JSON, no other text."""
             existing.entertainment_score = classification.entertainment_score
             existing.depth_score = classification.depth_score
             existing.clickbait_score = classification.clickbait_score
-            existing.analyzed_at = datetime.utcnow()
-            existing.expires_at = datetime.utcnow() + timedelta(hours=24)
+            existing.analyzed_at = datetime.now(timezone.utc)
+            existing.expires_at = datetime.now(timezone.utc) + timedelta(hours=24)
         else:
             # Create new
             cache = ContentCache(

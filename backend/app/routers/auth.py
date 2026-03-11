@@ -4,7 +4,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
 import httpx
 from typing import Optional
@@ -22,7 +22,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 def create_access_token(user_id: str) -> TokenResponse:
     """Create JWT access token."""
-    expires = datetime.utcnow() + timedelta(minutes=settings.jwt_expire_minutes)
+    expires = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt_expire_minutes)
     payload = {
         "sub": user_id,
         "exp": expires,
@@ -141,7 +141,7 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
         db.add(user)
         await db.flush()
     else:
-        user.last_login = datetime.utcnow()
+        user.last_login = datetime.now(timezone.utc)
         user.avatar_url = user_info.get("picture")
     
     await db.commit()
@@ -172,35 +172,4 @@ async def get_me(user: User = Depends(get_current_user)):
     return user
 
 
-@router.get("/demo")
-async def demo_login(db: AsyncSession = Depends(get_db)):
-    """
-    Demo login - creates/uses a test user without OAuth.
-    For development and portfolio demos only.
-    """
-    demo_email = "demo@focustube.dev"
-    
-    # Find or create demo user
-    result = await db.execute(
-        select(User).where(User.email == demo_email)
-    )
-    user = result.scalar_one_or_none()
-    
-    if user is None:
-        user = User(
-            email=demo_email,
-            google_id="demo-user-001",
-            display_name="Demo User",
-            avatar_url=None,
-        )
-        db.add(user)
-        await db.flush()
-    
-    await db.commit()
-    
-    # Create JWT token
-    token = create_access_token(str(user.id))
-    
-    # Redirect to frontend with token
-    frontend_callback = f"{settings.frontend_url}/auth/callback?token={token.access_token}"
-    return RedirectResponse(url=frontend_callback)
+
