@@ -34,6 +34,7 @@ app = FastAPI(
 allowed_origins = [
     settings.frontend_url,
     "https://koushikbethu.github.io",
+    "https://focustube-ai.netlify.app",
     "http://localhost:5173",
     "http://localhost:3000",
 ]
