@@ -8,17 +8,6 @@
   <meta name="description"
     content="FocusTube - AI-Powered YouTube filtering and focus modes to control your consumption" />
   <title>FocusTube</title>
-  <script>
-    (function() {
-      var params = new URLSearchParams(window.location.search);
-      var p = params.get('p');
-      var q = params.get('q');
-      if (p !== null) {
-        var url = '/FocusTube/' + p + (q ? decodeURIComponent(q) : '');
-        window.history.replaceState(null, '', url);
-      }
-    })();
-  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
