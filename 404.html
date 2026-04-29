@@ -4,12 +4,11 @@
     <meta charset="utf-8">
     <title>FocusTube</title>
     <script>
-        var path = window.location.pathname;
-        var query = window.location.search;
-        var redirect = '/FocusTube/' + path.replace(/^\//, '') + query;
-        window.location.replace(redirect);
+        var l = window.location;
+        var base = '/FocusTube/';
+        var path = l.pathname.replace(base, '');
+        l.replace(base + '?p=' + encodeURIComponent(path) + '&q=' + encodeURIComponent(l.search) + l.hash);
     </script>
 </head>
-<body>
-</body>
+<body></body>
 </html>
