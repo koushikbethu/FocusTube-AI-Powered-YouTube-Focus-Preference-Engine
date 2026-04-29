@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /FocusTube/
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /FocusTube/index.html [L]
