@@ -4,7 +4,7 @@ import path from 'path'
 
 export default defineConfig({
     plugins: [react()],
-    base: '/FocusTube-AI-Powered-YouTube-Focus-Preference-Engine/',
+    base: '/FocusTube/',
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),
