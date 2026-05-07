@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Home, Settings, BarChart3, LogOut, Focus, Sun, Moon } from 'lucide-react'
+import { Home, Settings, BarChart3, LogOut, Focus, Sun, Moon, User } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useFocusModes } from '../../hooks/useFocusModes'
 import { useTheme } from '../../contexts/ThemeContext'
@@ -21,6 +21,7 @@ export default function Layout({ children }: LayoutProps) {
         { path: '/', icon: Home, label: 'Feed' },
         { path: '/analytics', icon: BarChart3, label: 'Analytics' },
         { path: '/settings', icon: Settings, label: 'Settings' },
+        { path: '/profile', icon: User, label: 'Profile' },
     ]
 
     return (
@@ -83,6 +84,11 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Main Content */}
             <main className="main-content">
+                {/* Mobile Mode Selector */}
+                <div className="mobile-mode-selector">
+                    <ModeSelector />
+                </div>
+
                 {/* Active Mode Banner */}
                 {activeMode?.is_locked && (
                     <div className="locked-banner">

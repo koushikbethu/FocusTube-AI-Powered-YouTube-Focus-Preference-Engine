@@ -1,30 +1,39 @@
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useAuth } from '../hooks/useAuth'
+import api from '../services/api'
 
 export default function AuthCallback() {
     const [searchParams] = useSearchParams()
-    const { setToken } = useAuth()
     const navigate = useNavigate()
 
     useEffect(() => {
         const handleAuth = async () => {
             const token = searchParams.get('token')
+            console.log('AuthCallback - Token from URL:', token)
+            console.log('AuthCallback - Full URL:', window.location.href)
 
             if (token) {
-                const success = await setToken(token)
-                if (success) {
+                console.log('AuthCallback - Setting token...')
+                localStorage.setItem('token', token)
+                console.log('AuthCallback - Token saved to localStorage')
+                
+                try {
+                    const response = await api.get('/auth/me')
+                    console.log('AuthCallback - User fetched:', response.data)
                     navigate('/', { replace: true })
-                } else {
+                } catch (error) {
+                    console.error('AuthCallback - Failed to fetch user:', error)
+                    localStorage.removeItem('token')
                     navigate('/login', { replace: true })
                 }
             } else {
+                console.error('AuthCallback - No token in URL')
                 navigate('/login', { replace: true })
             }
         }
 
         handleAuth()
-    }, [searchParams, setToken, navigate])
+    }, [])
 
     return (
         <div className="flex items-center justify-center" style={{ minHeight: '100vh' }}>

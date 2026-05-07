@@ -1,12 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { AuthProvider, useAuth } from './hooks/useAuth'
 import { FocusModeProvider } from './hooks/useFocusModes'
 import Layout from './components/Layout/Layout'
+import SplashScreen from './components/SplashScreen/SplashScreen'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import AuthCallback from './pages/AuthCallback'
 import Settings from './pages/Settings'
 import Analytics from './pages/Analytics'
+import Profile from './pages/Profile'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
     const { user, loading } = useAuth()
@@ -27,6 +30,24 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function AppRoutes() {
+    const [showSplash, setShowSplash] = useState(true)
+
+    useEffect(() => {
+        const hasSeenSplash = sessionStorage.getItem('hasSeenSplash')
+        if (hasSeenSplash) {
+            setShowSplash(false)
+        }
+    }, [])
+
+    const handleSplashComplete = () => {
+        sessionStorage.setItem('hasSeenSplash', 'true')
+        setShowSplash(false)
+    }
+
+    if (showSplash) {
+        return <SplashScreen onComplete={handleSplashComplete} />
+    }
+
     return (
         <Routes>
             <Route path="/login" element={<Login />} />
@@ -49,6 +70,13 @@ function AppRoutes() {
                 <ProtectedRoute>
                     <Layout>
                         <Analytics />
+                    </Layout>
+                </ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+                <ProtectedRoute>
+                    <Layout>
+                        <Profile />
                     </Layout>
                 </ProtectedRoute>
             } />

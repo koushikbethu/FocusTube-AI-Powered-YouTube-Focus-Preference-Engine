@@ -52,6 +52,28 @@
     padding: var(--spacing-lg);
 }
 
+@media (max-width: 768px) {
+    .login-content {
+        padding: var(--spacing-md);
+    }
+
+    .login-card {
+        padding: var(--spacing-lg);
+    }
+
+    .login-logo h1 {
+        font-size: var(--font-size-2xl);
+    }
+
+    .login-tagline {
+        font-size: var(--font-size-base);
+    }
+
+    .login-features {
+        font-size: var(--font-size-xs);
+    }
+}
+
 .login-card {
     text-align: center;
     padding: var(--spacing-2xl);

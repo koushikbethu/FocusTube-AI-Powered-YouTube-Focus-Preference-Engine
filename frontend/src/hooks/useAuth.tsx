@@ -27,10 +27,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const fetchUser = async (): Promise<boolean> => {
         try {
+            console.log('Fetching user with token:', localStorage.getItem('token')?.substring(0, 20) + '...')
             const response = await api.get('/auth/me')
+            console.log('User fetched successfully:', response.data)
             setUser(response.data)
             return true
         } catch (error) {
+            console.error('Failed to fetch user:', error)
             localStorage.removeItem('token')
             setUser(null)
             return false
