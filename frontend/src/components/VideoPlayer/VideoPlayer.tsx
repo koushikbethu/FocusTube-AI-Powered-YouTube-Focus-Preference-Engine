@@ -31,10 +31,15 @@ export default function VideoPlayer({ videoId, onClose, modeId }: VideoPlayerPro
 
     const fetchVideoDetails = async () => {
         try {
+            console.log('Fetching video details for:', videoId)
             const response = await api.get(`/feed/video/${videoId}`)
+            console.log('Video details received:', response.data)
             setVideo(response.data)
         } catch (err: any) {
-            setError(err.response?.data?.detail || 'Failed to load video')
+            console.error('Failed to fetch video:', err)
+            const errorMsg = err.response?.data?.detail || err.message || 'Failed to load video'
+            console.error('Error details:', errorMsg)
+            setError(errorMsg)
         } finally {
             setLoading(false)
         }
@@ -154,9 +159,20 @@ export default function VideoPlayer({ videoId, onClose, modeId }: VideoPlayerPro
                     <div className="player-error">
                         <AlertTriangle size={24} />
                         <p>{error}</p>
-                        <button className="btn btn-primary" onClick={fetchVideoDetails}>
-                            Try Again
-                        </button>
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+                            <button className="btn btn-primary" onClick={fetchVideoDetails}>
+                                Try Again
+                            </button>
+                            <a
+                                href={`https://youtube.com/watch?v=${videoId}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-secondary"
+                            >
+                                <ExternalLink size={18} />
+                                Open on YouTube
+                            </a>
+                        </div>
                     </div>
                 )}
 
