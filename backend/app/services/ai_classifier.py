@@ -61,8 +61,12 @@ Clickbait indicators:
 Respond with ONLY the JSON, no other text."""
     
     def __init__(self):
-        genai.configure(api_key=settings.gemini_api_key)
-        self.model = genai.GenerativeModel('gemini-pro')
+        if settings.gemini_api_key:
+            genai.configure(api_key=settings.gemini_api_key)
+        try:
+            self.model = genai.GenerativeModel('gemini-1.0-pro')
+        except Exception:
+            self.model = None
     
     async def classify_video(
         self,
@@ -90,9 +94,8 @@ Respond with ONLY the JSON, no other text."""
                 )
         
         # Use fast heuristic classification by default for speed
-        if not use_ai:
+        if not use_ai or self.model is None:
             classification = self._fallback_classification(video)
-            # Cache result in background (don't await)
             await self._cache_result(video, classification, db)
             return classification
         
