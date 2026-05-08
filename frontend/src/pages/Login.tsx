@@ -3,13 +3,21 @@ import { Focus } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import './Login.css'
 
-const BACKEND = import.meta.env.VITE_API_URL?.replace('/api', '') || 'https://focustube-backend.onrender.com'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
+const BACKEND = API_URL.replace('/api', '')
 
 async function pingBackend(): Promise<boolean> {
     try {
-        const res = await fetch(`${BACKEND}/health`, { signal: AbortSignal.timeout(10000) })
+        console.log('Pinging backend:', `${BACKEND}/health`)
+        const res = await fetch(`${BACKEND}/health`, { 
+            method: 'GET',
+            mode: 'cors',
+            signal: AbortSignal.timeout(15000) 
+        })
+        console.log('Health check response:', res.status, res.ok)
         return res.ok
-    } catch {
+    } catch (err) {
+        console.error('Health check failed:', err)
         return false
     }
 }
@@ -86,9 +94,9 @@ export default function Login() {
                     {/* Server status */}
                     <div className={`wake-status wake-${status}`}>
                         <span className="wake-dot" />
-                        {status === 'waking' && 'Starting server, please wait...'}
-                        {status === 'ready' && 'Server ready'}
-                        {status === 'error' && 'Server slow — click anyway to try'}
+                        {status === 'waking' && `Starting server (${BACKEND})...`}
+                        {status === 'ready' && 'Server ready ✓'}
+                        {status === 'error' && 'Server timeout — click to try anyway'}
                     </div>
 
                     <button
