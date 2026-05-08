@@ -76,13 +76,41 @@ export default function Settings() {
     }
 
     const toggleCategory = (category: string, type: 'allowed' | 'blocked') => {
-        const key = type === 'allowed' ? 'allowed_categories' : 'blocked_categories'
-        const current = editData[key] || []
+        const allowedKey = 'allowed_categories'
+        const blockedKey = 'blocked_categories'
+        const currentAllowed = editData[allowedKey] || []
+        const currentBlocked = editData[blockedKey] || []
 
-        if (current.includes(category)) {
-            setEditData({ ...editData, [key]: current.filter(c => c !== category) })
+        if (type === 'allowed') {
+            if (currentAllowed.includes(category)) {
+                // Remove from allowed
+                setEditData({ 
+                    ...editData, 
+                    [allowedKey]: currentAllowed.filter(c => c !== category) 
+                })
+            } else {
+                // Add to allowed and remove from blocked if present
+                setEditData({ 
+                    ...editData, 
+                    [allowedKey]: [...currentAllowed, category],
+                    [blockedKey]: currentBlocked.filter(c => c !== category)
+                })
+            }
         } else {
-            setEditData({ ...editData, [key]: [...current, category] })
+            if (currentBlocked.includes(category)) {
+                // Remove from blocked
+                setEditData({ 
+                    ...editData, 
+                    [blockedKey]: currentBlocked.filter(c => c !== category) 
+                })
+            } else {
+                // Add to blocked and remove from allowed if present
+                setEditData({ 
+                    ...editData, 
+                    [blockedKey]: [...currentBlocked, category],
+                    [allowedKey]: currentAllowed.filter(c => c !== category)
+                })
+            }
         }
     }
 

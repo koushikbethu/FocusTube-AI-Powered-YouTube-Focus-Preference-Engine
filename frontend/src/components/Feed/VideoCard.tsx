@@ -8,6 +8,8 @@ interface VideoCardProps {
 }
 
 function formatDuration(seconds: number): string {
+    if (!seconds || seconds === 0) return 'LIVE'
+    
     const hrs = Math.floor(seconds / 3600)
     const mins = Math.floor((seconds % 3600) / 60)
     const secs = seconds % 60
@@ -51,10 +53,21 @@ export default function VideoCard({ video, onClick }: VideoCardProps) {
             {/* Thumbnail */}
             <div className="video-thumbnail">
                 {video.thumbnail_url ? (
-                    <img src={video.thumbnail_url} alt="" loading="lazy" />
-                ) : (
-                    <div className="thumbnail-placeholder" />
-                )}
+                    <img 
+                        src={video.thumbnail_url} 
+                        alt={video.title}
+                        loading="lazy"
+                        onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            target.nextElementSibling?.classList.add('show');
+                        }}
+                    />
+                ) : null}
+                
+                <div className="thumbnail-placeholder">
+                    <div className="placeholder-icon">📺</div>
+                </div>
 
                 <span className="video-duration">
                     {formatDuration(video.duration_seconds)}

@@ -3,8 +3,8 @@ services:
     name: focustube-backend
     env: python
     region: oregon
-    buildCommand: cd backend && pip install -r requirements.txt
-    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: cd backend && pip install -r requirements-prod.txt
+    startCommand: cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: YOUTUBE_API_KEY
         sync: false
@@ -21,7 +21,7 @@ services:
           name: focustube-db
           property: connectionString
       - key: FRONTEND_URL
-        value: https://focustube.vercel.app
+        value: https://yourusername.github.io/focustube
       - key: DEBUG
         value: false
 

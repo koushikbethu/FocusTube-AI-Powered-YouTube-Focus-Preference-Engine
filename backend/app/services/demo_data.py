@@ -72,7 +72,7 @@ DEMO_VIDEOS = {
         {"id": "howto_20", "title": "How to Learn Any Skill Fast", "channel_title": "Matt D'Avella", "duration_seconds": 1200, "view_count": 4800000, "thumbnail_url": "https://i.ytimg.com/vi/5MgBikgcWnY/hqdefault.jpg"},
     ],
     "MUSIC": [
-        {"id": "music_1", "title": "Lofi Hip Hop Radio - Beats to Study/Relax to", "channel_title": "Lofi Girl", "duration_seconds": 0, "view_count": 950000000, "thumbnail_url": "https://i.ytimg.com/vi/jfKfPfyJRdk/hqdefault.jpg"},
+        {"id": "music_1", "title": "Lofi Hip Hop Radio - Beats to Study/Relax to", "channel_title": "Lofi Girl", "duration_seconds": 7200, "view_count": 950000000, "thumbnail_url": "https://i.ytimg.com/vi/jfKfPfyJRdk/hqdefault.jpg"},
         {"id": "music_2", "title": "Classical Music Playlist for Concentration", "channel_title": "HALIDONMUSIC", "duration_seconds": 10800, "view_count": 45000000, "thumbnail_url": "https://i.ytimg.com/vi/mIYzp5rcTvU/hqdefault.jpg"},
         {"id": "music_3", "title": "Jazz Music for Work and Study", "channel_title": "Cafe Music BGM", "duration_seconds": 7200, "view_count": 28000000, "thumbnail_url": "https://i.ytimg.com/vi/fEvM-OUbaKs/hqdefault.jpg"},
         {"id": "music_4", "title": "Piano Music for Relaxation", "channel_title": "Relaxing Records", "duration_seconds": 3600, "view_count": 18000000, "thumbnail_url": "https://i.ytimg.com/vi/77ZozI0rw7w/hqdefault.jpg"},

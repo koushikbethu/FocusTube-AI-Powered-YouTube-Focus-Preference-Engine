@@ -18,11 +18,12 @@ api.interceptors.request.use((config) => {
     return config
 })
 
-// Handle auth errors
+// Handle auth errors - only logout on explicit 401, not network errors
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
+        // Only logout on explicit 401 Unauthorized, not network errors
+        if (error.response?.status === 401 && error.response?.data?.detail) {
             localStorage.removeItem('token')
             window.location.href = `${import.meta.env.BASE_URL}login`
         }
