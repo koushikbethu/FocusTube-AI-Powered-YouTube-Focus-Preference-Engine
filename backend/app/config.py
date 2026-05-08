@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
     
     # Database
-    database_url: str = "postgresql+asyncpg://user:password@localhost:5432/youtube_focus"
+    database_url: str = "sqlite+aiosqlite:///./youtube_focus.db"
     
     # Google OAuth
     google_client_id: str = ""

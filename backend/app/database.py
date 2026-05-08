@@ -7,8 +7,15 @@ from app.config import get_settings
 
 settings = get_settings()
 
+# Fix Render's DATABASE_URL: postgres:// -> postgresql+asyncpg://
+database_url = settings.database_url
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+elif database_url.startswith("postgresql://") and "+asyncpg" not in database_url:
+    database_url = database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+
 # Determine if using SQLite
-is_sqlite = settings.database_url.startswith("sqlite")
+is_sqlite = database_url.startswith("sqlite")
 
 # Create async engine with appropriate settings
 engine_kwargs = {
@@ -20,7 +27,7 @@ engine_kwargs = {
 if is_sqlite:
     engine_kwargs["connect_args"] = {"check_same_thread": False}
 
-engine = create_async_engine(settings.database_url, **engine_kwargs)
+engine = create_async_engine(database_url, **engine_kwargs)
 
 # Session factory
 async_session_maker = async_sessionmaker(

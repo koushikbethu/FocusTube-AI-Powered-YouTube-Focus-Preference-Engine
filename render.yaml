@@ -3,6 +3,7 @@ services:
     name: focustube-backend
     env: python
     region: oregon
+    pythonVersion: "3.11.0"
     buildCommand: cd backend && pip install -r requirements-prod.txt
     startCommand: cd backend && python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
@@ -21,7 +22,7 @@ services:
           name: focustube-db
           property: connectionString
       - key: FRONTEND_URL
-        value: https://yourusername.github.io/focustube
+        value: https://koushikbethu.github.io/FocusTube
       - key: DEBUG
         value: false
 
