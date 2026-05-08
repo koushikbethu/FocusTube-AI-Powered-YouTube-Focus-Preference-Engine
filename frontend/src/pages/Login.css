@@ -162,3 +162,30 @@
     height: 60px;
     margin-bottom: var(--spacing-lg);
 }
+
+.wake-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-sm);
+    justify-content: center;
+}
+
+.wake-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-warning, #f59e0b);
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+.wake-waking .wake-dot { background: #f59e0b; animation: pulse 1.2s ease-in-out infinite; }
+.wake-ready .wake-dot  { background: #22c55e; animation: none; }
+.wake-error .wake-dot  { background: #ef4444; animation: none; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+}
