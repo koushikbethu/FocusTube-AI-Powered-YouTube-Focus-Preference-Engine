@@ -28,17 +28,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const fetchUser = async (): Promise<boolean> => {
         try {
             console.log('Fetching user with token:', localStorage.getItem('token')?.substring(0, 20) + '...')
-            const response = await api.get('/auth/me')
+            const response = await api.get('/auth/me', { timeout: 60000 } as any)
             console.log('User fetched successfully:', response.data)
             setUser(response.data)
             return true
         } catch (error: any) {
             console.error('Failed to fetch user:', error)
-            // Only clear token on explicit auth errors, not network errors
+            // Only clear token on explicit auth errors, not network errors or timeouts
             if (error.response?.status === 401) {
                 localStorage.removeItem('token')
                 setUser(null)
             }
+            // Don't block - let user continue even if backend is slow
             return false
         } finally {
             setLoading(false)
@@ -46,7 +47,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const login = () => {
-        // Redirect to backend API for Google OAuth
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
         window.location.href = `${apiUrl}/auth/google`
     }
