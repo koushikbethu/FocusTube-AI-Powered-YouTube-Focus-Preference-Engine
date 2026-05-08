@@ -30,16 +30,18 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS middleware
+# CORS middleware - allow all origins for health check
 allowed_origins = [
     settings.frontend_url,
     "http://localhost:5173",
     "http://localhost:3000",
+    "https://koushikbethu.github.io",
+    "*"  # Allow all for health checks
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
