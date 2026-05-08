@@ -1,29 +1,29 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import api from '../services/api'
+import { useAuth } from '../hooks/useAuth'
 
 export default function AuthCallback() {
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
+    const { setToken } = useAuth()
+    const handled = useRef(false)
 
     useEffect(() => {
+        if (handled.current) return
+        handled.current = true
+
         const handleAuth = async () => {
             const token = searchParams.get('token')
-            console.log('AuthCallback - Token from URL:', token)
-            console.log('AuthCallback - Full URL:', window.location.href)
+            console.log('AuthCallback - Token from URL:', token?.substring(0, 20) + '...')
 
             if (token) {
-                console.log('AuthCallback - Setting token...')
-                localStorage.setItem('token', token)
-                console.log('AuthCallback - Token saved to localStorage')
-                
-                try {
-                    const response = await api.get('/auth/me')
-                    console.log('AuthCallback - User fetched:', response.data)
+                console.log('AuthCallback - Setting token via useAuth...')
+                const success = await setToken(token)
+                if (success) {
+                    console.log('AuthCallback - Success, navigating to home')
                     navigate('/', { replace: true })
-                } catch (error) {
-                    console.error('AuthCallback - Failed to fetch user:', error)
-                    localStorage.removeItem('token')
+                } else {
+                    console.error('AuthCallback - Failed to set token')
                     navigate('/login', { replace: true })
                 }
             } else {
@@ -33,7 +33,7 @@ export default function AuthCallback() {
         }
 
         handleAuth()
-    }, [])
+    }, [searchParams, navigate, setToken])
 
     return (
         <div className="flex items-center justify-center" style={{ minHeight: '100vh' }}>
