@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379"
     
     # App
-    frontend_url: str = "http://localhost:5173"
+    frontend_url: str = "https://koushikbethu.github.io/FocusTube"
     debug: bool = True
     
     class Config:
