@@ -12,7 +12,7 @@ async function pingBackend(): Promise<boolean> {
         const res = await fetch(`${BACKEND}/health`, { 
             method: 'GET',
             mode: 'cors',
-            signal: AbortSignal.timeout(15000) 
+            signal: AbortSignal.timeout(60000)  // 60 seconds for cold start
         })
         console.log('Health check response:', res.status, res.ok)
         return res.ok
@@ -31,16 +31,18 @@ export default function Login() {
         let cancelled = false
 
         const wake = async () => {
-            // Try up to 12 times (2 min total)
-            for (let i = 0; i < 12; i++) {
+            // Try up to 3 times with 60s timeout each (3 min total)
+            for (let i = 0; i < 3; i++) {
                 if (cancelled) return
+                console.log(`Health check attempt ${i + 1}/3`)
                 const ok = await pingBackend()
                 if (ok) {
                     awake.current = true
                     if (!cancelled) setStatus('ready')
                     return
                 }
-                await new Promise(r => setTimeout(r, 10000))
+                // Wait 5s before retry
+                if (i < 2) await new Promise(r => setTimeout(r, 5000))
             }
             if (!cancelled) setStatus('error')
         }
@@ -52,13 +54,19 @@ export default function Login() {
     const handleLogin = async () => {
         if (!awake.current) {
             setStatus('waking')
-            // Keep pinging until awake
-            for (let i = 0; i < 12; i++) {
+            console.log('Waiting for backend to wake...')
+            // Keep pinging until awake (max 3 attempts)
+            for (let i = 0; i < 3; i++) {
                 const ok = await pingBackend()
-                if (ok) { awake.current = true; break }
-                await new Promise(r => setTimeout(r, 5000))
+                if (ok) { 
+                    awake.current = true
+                    setStatus('ready')
+                    break 
+                }
+                if (i < 2) await new Promise(r => setTimeout(r, 5000))
             }
         }
+        console.log('Redirecting to login...')
         login()
     }
 
