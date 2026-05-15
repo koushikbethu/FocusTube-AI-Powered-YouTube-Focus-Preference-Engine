@@ -10,7 +10,7 @@ A production-grade content-control and AI-based filtering system that helps you 
 
 ## 🌟 Live Demo
 
-- **Frontend**: [https://yourusername.github.io/focustube](https://yourusername.github.io/focustube)
+- **Frontend**: [https://koushikbethu.github.io/FocusTube/](https://koushikbethu.github.io/FocusTube/)
 - **Backend API**: [https://focustube-backend.onrender.com](https://focustube-backend.onrender.com)
 - **API Docs**: [https://focustube-backend.onrender.com/docs](https://focustube-backend.onrender.com/docs)
 
