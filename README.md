@@ -1,6 +1,6 @@
 # 🎯 FocusTube - AI-Powered YouTube Focus Engine
 
-[![Deploy Status](https://img.shields.io/badge/Deploy-GitHub%20Pages-success)](https://github.com/yourusername/focustube)
+[![Deploy Status](https://img.shields.io/badge/Deploy-GitHub%20Pages-success)](https://koushikbethu.github.io/FocusTube/)
 [![Backend](https://img.shields.io/badge/Backend-Render-blue)](https://focustube-backend.onrender.com)
 [![React](https://img.shields.io/badge/Frontend-React%2018-61dafb)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688)](https://fastapi.tiangolo.com/)
